@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, EqualTo
+from wtforms.validators import DataRequired, EqualTo, ValidationError
+
+from webapp.user.models import User
 
 
 class LoginForm(FlaskForm):
@@ -16,3 +18,8 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')],
                               render_kw={"class": "form-control"})
     submit = SubmitField('Register', render_kw={"class": "btn btn-primary"})
+
+    def validate_username(self, username):
+        users_count = User.query.filter_by(username=username.data).count()
+        if users_count > 0:
+            raise ValidationError('User is exist in database')
