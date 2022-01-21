@@ -16,13 +16,18 @@
 ### Установка приложения
 
 * Активировать виртуальное окружение
-```
+```sh
 python3 -m venv env
 source ./env/bin/activate
+```
+
+* Создать конфигурационный файл, `SECRET_KEY` - длинная строка случайных символов:
+```sh
+cp webapp/template_config.py webapp/config.py
 ```
 * Получить [токен](https://tinkoff.github.io/investAPI/token/) для песочницы с [сайта Tinkoff](https://www.tinkoff.ru/invest/) и добавить его в `webapp/config.py` как константу `API_TOKEN`
 
 * Установить зависимости:
-```
+```sh
 pip install -r requirements.txt
 ```
