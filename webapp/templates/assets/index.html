@@ -1,0 +1,34 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-8">
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-success" role="alert">
+        {% for message in messages %}
+            {{ message }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <ul class="list-group">
+        <!-- <li class="list-group-item">figi : name</li> -->
+        {% if asset_list %}
+            {% for elem in asset_list %}
+                <li class="list-group-item">{{elem}}</li>
+            {% endfor %}
+        {% else %}
+            Error Data List
+        {% endif %}   
+    </ul>
+
+  </div>
+
+  <div class="col-4">
+  </div>
+</div>
+{% endblock %}

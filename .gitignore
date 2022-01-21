@@ -1,0 +1,6 @@
+__pycache__/
+.vscode/
+env/
+config.py
+*.db
+example*

@@ -1,0 +1,31 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <ul class="list-group">
+            {% if user_list %}
+                {% for elem in user_list %}
+                    <li class="list-group-item">{{elem}}</li>
+                {% endfor %}
+            {% else %}
+                User List Error
+            {% endif %}   
+        </ul>
+
+  </div>
+
+</div>
+{% endblock %}
