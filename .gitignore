@@ -1,6 +1,7 @@
 __pycache__/
 .vscode/
 env/
+migrations/
 config.py
 *.db
 example*
