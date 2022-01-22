@@ -2,33 +2,83 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-  <div class="col-8">
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="alert alert-success" role="alert">
-        {% for message in messages %}
-            {{ message }}<br>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
+{% if current_user.is_authenticated %}
 
-    <ul class="list-group">
-        <!-- <li class="list-group-item">figi : name</li> -->
-        {% if asset_list %}
-            {% for elem in asset_list %}
-                <li class="list-group-item">{{elem}}</li>
-            {% endfor %}
-        {% else %}
-            Error Data List
-        {% endif %}   
-    </ul>
-
-  </div>
-
-  <div class="col-4">
-  </div>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-success" role="alert">
+    {% for message in messages %}
+        {{ message }}<br>
+    {% endfor %}
 </div>
+{% endif %}
+{% endwith %}
+
+<form action="{{ url_for('assets.asset_selection') }}" method="post">
+    <div class="form-row">
+        {{ form.hidden_tag() }}
+        <div class="col-8">
+            <!-- {{ form.asset.label }} -->
+            {{ form.asset(list="id_datalist") }}
+            <datalist id="id_datalist">
+            {% for asset in asset_list %}
+                <option value="{{ asset }}"></option>
+            {% endfor %}
+            </datalist>
+        </div>
+        <div class="col-2">
+            <!-- {{ form.number.label }} -->
+            {{ form.number() }}
+        </div>
+        <div class="col-2">
+            {{ form.submit }}
+        </div>
+    </div>
+</form>
+
+
+<div class="row">
+  <div class="col-10">
+
+        <!-- <form action="{{ url_for('assets.asset_selection') }}" method="post">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.asset.label }}
+                {{ form.asset(list="id_datalist") }}
+                <datalist id="id_datalist">
+                {% for asset in asset_list %}
+                    <option value="{{ asset }}"></option>
+                {% endfor %}
+                </datalist>
+            </div>
+            <div class="form-group">
+                {{ form.number.label }}
+                {{ form.number() }}
+            </div>
+            {{ form.submit }}
+        </form> -->
+
+        <hr/>
+
+        <ul class="list-group">
+            {% if asset_list %}
+                {% for elem in asset_list %}
+                    <li class="list-group-item">{{elem}}</li>
+                {% endfor %}
+            {% else %}
+                Error Data List
+            {% endif %}   
+        </ul>
+
+    </div>
+
+    <div class="col-2">
+    </div>
+</div>
+
+{% else %}
+    <p> Please login to create portfolio </p>
+{% endif %}
+
 {% endblock %}

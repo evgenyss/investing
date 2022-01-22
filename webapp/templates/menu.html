@@ -24,28 +24,29 @@
 
           {% if current_user.is_authenticated %}
           <li class="nav-item active">
-            <span class="nav-link"> Hi, {{ current_user.username }} </span>
+            <span class="btn btn-outline-success"> {{ current_user.username }} </span>
           </li>
 
             {% if current_user.is_admin %}
             <li class="nav-item active">
-              <a class="nav-link" href="{{ url_for('admin.admin_index') }}"> Admin Console </a>
+              <a class="btn btn-light" href="{{ url_for('admin.admin_index') }}" role="button"> Admin Console </a>
             </li>
             {% endif %}
 
           <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('user.logout') }}"> Logout </a>
+            <!-- <a class="nav-link" href="{{ url_for('user.logout') }}"> Logout </a> -->
+            <a class="btn btn-light" href="{{ url_for('user.logout') }}" role="button"> Logout </a>
           </li>
           {% else %}
           <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('user.register') }}"> Register </a>
+            <a class="btn btn-light" href="{{ url_for('user.register') }}" role="button"> Register </a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('user.login') }}"> Login </a>
+            <a class="btn btn-light" href="{{ url_for('user.login') }}" role="button"> Login </a>
           </li>
           {% endif %}
         
       </ul>
 
     </div>
-  </nav>
+</nav>

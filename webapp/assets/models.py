@@ -28,11 +28,12 @@ class Currency(db.Model):
         return '<Currency : {} {}>'.format(self.figi, self.name)
 
 
-class LastPrices(db.Model):
+class Portfolio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    figi = db.Column(db.String, unique=True, nullable=False)
+    figi_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    number = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
-        return '<Price {} {}>'.format(self.figi, self.price)
+        return '<Portfolio instance {} {}>'.format(self.figi, self.price)
