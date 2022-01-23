@@ -15,15 +15,30 @@
         {% endif %}
         {% endwith %}
 
-        <ul class="list-group">
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">User</th>
+                <th scope="col" >Role</th>
+              </tr>
+            </thead>
+            <tbody>
+
             {% if user_list %}
-                {% for elem in user_list %}
-                    <li class="list-group-item">{{elem}}</li>
+                {% for user,role in user_list %}
+                    <tr>
+                        <th scope="row">{{loop.index}}</th>
+                        <td>{{user}}</td>
+                        <td>{{role}}</td>
+                    </tr>
                 {% endfor %}
             {% else %}
                 User List Error
             {% endif %}   
-        </ul>
+
+            </tbody>
+          </table>
 
   </div>
 

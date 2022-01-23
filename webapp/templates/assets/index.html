@@ -41,26 +41,8 @@
 <div class="row">
   <div class="col-10">
 
-        <!-- <form action="{{ url_for('assets.asset_selection') }}" method="post">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.asset.label }}
-                {{ form.asset(list="id_datalist") }}
-                <datalist id="id_datalist">
-                {% for asset in asset_list %}
-                    <option value="{{ asset }}"></option>
-                {% endfor %}
-                </datalist>
-            </div>
-            <div class="form-group">
-                {{ form.number.label }}
-                {{ form.number() }}
-            </div>
-            {{ form.submit }}
-        </form> -->
-
         <hr/>
-
+<!-- 
         <ul class="list-group">
             {% if asset_list %}
                 {% for elem in asset_list %}
@@ -69,16 +51,21 @@
             {% else %}
                 Error Data List
             {% endif %}   
-        </ul>
+        </ul> -->
 
     </div>
 
     <div class="col-2">
+        <hr/>
+        <button type="button" class="btn btn-primary btn-lg">Update Rates</button>
     </div>
 </div>
 
 {% else %}
-    <p> Please login to create portfolio </p>
+    <div class="alert alert-primary" role="alert">
+        Please <a href="{{ url_for('user.login') }}" class="alert-link">Login</a>  or
+        <a href="{{ url_for('user.register') }}" class="alert-link">Register</a> to create portfolio!
+    </div>
 {% endif %}
 
 {% endblock %}

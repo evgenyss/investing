@@ -2,7 +2,7 @@ import requests
 from flask import current_app
 from datetime import datetime
 from webapp.db import db
-from webapp.assets.models import Asset  # , LastPrices
+from webapp.assets.models import Asset
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 

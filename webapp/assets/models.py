@@ -30,10 +30,10 @@ class Currency(db.Model):
 
 class Portfolio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    figi_id = db.Column(db.Integer, nullable=False)
+    asset_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
     number = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)
+    price = db.Column(db.Float)
 
     def __repr__(self):
-        return '<Portfolio instance {} {}>'.format(self.figi, self.price)
+        return '<Portfolio instance {} {}>'.format(self.asset_id, self.price)
