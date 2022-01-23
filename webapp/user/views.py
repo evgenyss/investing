@@ -25,16 +25,16 @@ def process_login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            flash(f'Welcome, {user.username}!')
+            flash(f'Welcome, {user.username}!', 'alert-success')
             return redirect(url_for('assets.index'))
-    flash('Incorrect username or password')
+    flash('Incorrect username or password', 'alert-danger')
     return redirect(url_for('user.login'))
 
 
 @blueprint.route('/logout')
 def logout():
     logout_user()
-    flash('Bye!')
+    flash('Bye!', 'alert-success')
     return redirect(url_for('assets.index'))
 
 
@@ -55,13 +55,10 @@ def process_reg():
         new_user.set_password(form.password.data)
         db.session.add(new_user)
         db.session.commit()
-        flash('Registration Success!')
+        flash('Registration Success!', 'alert-success')
         return redirect(url_for('user.login'))
     else:
         for field, errors in form.errors.items():
             for error in errors:
-                flash('Error in "{}": - {}'.format(
-                    getattr(form, field).label.text,
-                    error
-                ))
+                flash('Error in "{}": - {}'.format(getattr(form, field).label.text, error), 'alert-danger')
     return redirect(url_for('user.register'))

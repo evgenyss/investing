@@ -14,7 +14,7 @@ def admin_required(func):
         elif not current_user.is_authenticated:
             return current_app.login_manager.unauthorized()
         elif not current_user.is_admin:
-            flash('This page is for admins only')
+            flash('This page is for admins only', 'alert-danger')
             return redirect(url_for('assets.index'))
         return func(*args, **kwargs)
     return decorated_view

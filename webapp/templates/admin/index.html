@@ -2,45 +2,37 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div class="row">
   <div class="col-12">
 
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div class="alert alert-success" role="alert">
-            {% for message in messages %}
-                {{ message }}<br>
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">User</th>
+            <th scope="col" >Role</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        {% if user_list %}
+            {% for user,role in user_list %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{user}}</td>
+                    <td>{{role}}</td>
+                </tr>
             {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
+        {% else %}
+            User List Error
+        {% endif %}   
 
-        <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">User</th>
-                <th scope="col" >Role</th>
-              </tr>
-            </thead>
-            <tbody>
-
-            {% if user_list %}
-                {% for user,role in user_list %}
-                    <tr>
-                        <th scope="row">{{loop.index}}</th>
-                        <td>{{user}}</td>
-                        <td>{{role}}</td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                User List Error
-            {% endif %}   
-
-            </tbody>
-          </table>
+        </tbody>
+      </table>
 
   </div>
 
 </div>
+
 {% endblock %}

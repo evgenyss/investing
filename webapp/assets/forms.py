@@ -22,4 +22,4 @@ class AssetSelection(FlaskForm):
             if not asset_count:
                 raise ValidationError('Select asset from dropdown list')
         except (ValueError, KeyError):
-            raise ValidationError('Select asset from dropdown list')
+            raise ValidationError('Please select asset from dropdown list')
