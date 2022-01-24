@@ -34,8 +34,8 @@
   <div class="col-10">
 
         <hr/>
-<!-- 
-        <ul class="list-group">
+
+        <!-- <ul class="list-group">
             {% if asset_list %}
                 {% for elem in asset_list %}
                     <li class="list-group-item">{{elem}}</li>
@@ -44,6 +44,41 @@
                 Error Data List
             {% endif %}   
         </ul> -->
+
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Type</th>
+                <th scope="col">Ticker</th>
+                <th scope="col">Name</th>
+                <th scope="col">Sector</th>
+                <th scope="col">Num</th>
+                <th scope="col">Price</th>
+                <th scope="col">Curr.</th>
+              </tr>
+            </thead>
+            <tbody>
+    
+              {% if portfolio_list %}
+                {% for type, ticker, name, sector, number, price, currency in portfolio_list %}
+                    <tr>
+                        <th scope="row">{{loop.index}}</th>
+                        <td>{{type}}</td>
+                        <td>{{ticker}}</td>
+                        <td>{{name}}</td>
+                        <td>{{sector}}</td>
+                        <td>{{number}}</td>
+                        <td>{{price}}</td>
+                        <td>{{currency}}</td>
+                    </tr>
+                {% endfor %}
+              {% else %}
+                  Portfolio List Error
+              {% endif %}
+    
+            </tbody>
+          </table>
 
     </div>
 
