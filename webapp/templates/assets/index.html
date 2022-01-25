@@ -7,7 +7,7 @@
 {% if current_user.is_authenticated %}
 
 
-<form action="{{ url_for('assets.asset_selection') }}" method="post">
+<form autocomplete="off" action="{{ url_for('assets.asset_selection') }}" method="post">
     <div class="form-row">
         {{ form.hidden_tag() }}
         <div class="col-8">
@@ -80,7 +80,6 @@
             {{ update_rates_form.submit }}
         </form>
 
-        <!-- <button type="button" class="btn btn-primary btn-lg">Update Rates</button> -->
     </div>
 </div>
 

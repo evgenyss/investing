@@ -75,6 +75,10 @@ def update_rates():
         for asset, portfolio in jointed_data:
             figi_list.append(asset.figi)
 
+        if not figi_list:
+            flash("No Data in Portfolio", 'alert-warning')
+            return redirect(url_for('assets.index'))
+
         # Get Last Prices for figi list
         figi_price_dictionary = {}
         for last_price_dict in get_last_prices(figi_list)['lastPrices']:
