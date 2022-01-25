@@ -23,3 +23,7 @@ class AssetSelection(FlaskForm):
                 raise ValidationError('Select asset from dropdown list')
         except (ValueError, KeyError):
             raise ValidationError('Please select asset from dropdown list')
+
+
+class UpdateRates(FlaskForm):
+    submit = SubmitField('Update Rates', render_kw={"class": "btn btn-primary btn-lg"})

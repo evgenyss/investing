@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_login import current_user
 
-from webapp.assets.forms import AssetSelection
+from webapp.assets.forms import AssetSelection, UpdateRates
 from webapp.assets.models import Asset, Portfolio
 from webapp.db import db
+
+from webapp.get_data import get_last_prices, format_price
 
 blueprint = Blueprint('assets', __name__)
 
@@ -13,6 +15,7 @@ def index():
     display_list = []
     title = "Portfolio"
     asset_form = AssetSelection()
+    update_rates_form = UpdateRates()
     responce_data = Asset.query.with_entities(Asset.ticker, Asset.name, Asset.type).order_by(Asset.name).all()
     output = [" : ".join(output[:3]) for output in responce_data]
     if current_user.is_authenticated:
@@ -24,7 +27,8 @@ def index():
                                 portfolio.number, portfolio.price, asset.currency])
     # print(display_list)
     return render_template("assets/index.html", page_title=title,
-                           asset_list=output, portfolio_list=display_list, form=asset_form)
+                           asset_list=output, portfolio_list=display_list,
+                           form=asset_form, update_rates_form=update_rates_form)
 
 
 @blueprint.route('/asset-select', methods=['POST'])
@@ -34,7 +38,8 @@ def asset_selection():
         # for ticker and assetid - validation in form.py
         ticker = form.asset.data.split(" : ")[0]
         assetid = Asset.query.filter(Asset.ticker == ticker).with_entities(Asset.id).first()[0]
-        # Update row, if ticker exist for user
+
+        # Update row, if ticker exist for user, else insert data in database
         ticker_for_user = Portfolio.query.filter(
             Portfolio.asset_id == assetid).filter(Portfolio.user_id == current_user.id)
         if ticker_for_user.count():
@@ -42,7 +47,6 @@ def asset_selection():
             db.session.commit()
             flash(f'Success data updating for {ticker}', 'alert-success')
         else:
-            # flash(f'{form.asset.data} : {form.number.data } : {current_user.id} : {assetid}', 'alert-success')
             new_portfolio_data = Portfolio(asset_id=assetid,
                                            user_id=current_user.id,
                                            number=int(form.number.data),
@@ -50,10 +54,38 @@ def asset_selection():
             db.session.add(new_portfolio_data)
             db.session.commit()
             flash(f'Success data insertion for {ticker}', 'alert-success')
-        return redirect(url_for('assets.index'))
-
     else:
         for field, errors in form.errors.items():
             for error in errors:
                 flash('Error in "{}": - {}'.format(getattr(form, field).label.text, error), 'alert-danger')
+    return redirect(url_for('assets.index'))
+
+
+@blueprint.route('/update-rates', methods=['POST'])
+def update_rates():
+    update_rates_form = UpdateRates()
+    if update_rates_form.validate_on_submit():
+
+        jointed_data = db.session.query(Asset, Portfolio).join(
+            Portfolio, Asset.id == Portfolio.asset_id
+            ).filter(Portfolio.user_id == current_user.id)
+
+        # Get figi list
+        figi_list = []
+        for asset, portfolio in jointed_data:
+            figi_list.append(asset.figi)
+
+        # Get Last Prices for figi list
+        figi_price_dictionary = {}
+        for last_price_dict in get_last_prices(figi_list)['lastPrices']:
+            last_price = format_price(last_price_dict['price'])
+            figi_key = last_price_dict['figi']
+            figi_price_dictionary[figi_key] = last_price
+
+        # Insert data in database
+        for asset, portfolio in jointed_data:
+            portfolio.price = figi_price_dictionary[asset.figi]
+        db.session.commit()
+        flash("Rates Updated", 'alert-success')
+
     return redirect(url_for('assets.index'))

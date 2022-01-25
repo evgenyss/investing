@@ -53,8 +53,12 @@ def get_last_prices(list_of_figi):
 def format_price(price_dict):
     """
     format dictionary price like {'units': '98', 'nano': 475000000} to float 98,4750
+    KeyError exception for KeyError: 'nano' Errors
     """
-    price = int(price_dict['units']) + float(price_dict['nano']/1000000000)
+    try:
+        price = int(price_dict['units']) + float(price_dict['nano']/1000000000)
+    except KeyError:
+        price = float(price_dict['units'])
     return float('{:.4f}'.format(price))
 
 

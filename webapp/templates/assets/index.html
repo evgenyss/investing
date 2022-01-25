@@ -35,16 +35,6 @@
 
         <hr/>
 
-        <!-- <ul class="list-group">
-            {% if asset_list %}
-                {% for elem in asset_list %}
-                    <li class="list-group-item">{{elem}}</li>
-                {% endfor %}
-            {% else %}
-                Error Data List
-            {% endif %}   
-        </ul> -->
-
         <table class="table table-bordered">
             <thead>
               <tr>
@@ -84,7 +74,13 @@
 
     <div class="col-2">
         <hr/>
-        <button type="button" class="btn btn-primary btn-lg">Update Rates</button>
+
+        <form action="{{ url_for('assets.update_rates') }}" method="post">
+            {{ update_rates_form.hidden_tag() }}
+            {{ update_rates_form.submit }}
+        </form>
+
+        <!-- <button type="button" class="btn btn-primary btn-lg">Update Rates</button> -->
     </div>
 </div>
 
