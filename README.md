@@ -31,3 +31,16 @@ cp webapp/template_config.py webapp/config.py
 ```sh
 pip install -r requirements.txt
 ```
+
+* Запустить скрипты создания базы и наполнения данными:
+```sh
+./initdb.sh
+python create_data.py
+python create_admin.py
+```
+
+* Запустить приложение в отладочном режиме:
+```sh
+./run.sh
+```
+* Проверить доступность на [localhost:5000](http://localhost:5000/)
