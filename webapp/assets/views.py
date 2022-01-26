@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flask_login import current_user
 
-from webapp.assets.forms import AssetSelection, UpdateRates
+from webapp.assets.forms import AssetSelection, UpdateRates, AssetDelete
 from webapp.assets.models import Asset, Portfolio
 from webapp.db import db
 
@@ -23,9 +23,10 @@ def index():
             Portfolio, Asset.id == Portfolio.asset_id
             ).filter(Portfolio.user_id == current_user.id)
         for asset, portfolio in jointed_data:
+            delete_form = AssetDelete()
             display_list.append([asset.type, asset.ticker, asset.name, asset.sector,
-                                portfolio.number, portfolio.price, asset.currency])
-    # print(display_list)
+                                portfolio.number, portfolio.price, asset.currency, portfolio.asset_id, delete_form])
+
     return render_template("assets/index.html", page_title=title,
                            asset_list=output, portfolio_list=display_list,
                            form=asset_form, update_rates_form=update_rates_form)
@@ -45,7 +46,7 @@ def asset_selection():
         if ticker_for_user.count():
             ticker_for_user.first().number = int(form.number.data)
             db.session.commit()
-            flash(f'Success data updating for {ticker}', 'alert-success')
+            flash(f'Success data updating for {ticker}', 'alert-warning')
         else:
             new_portfolio_data = Portfolio(asset_id=assetid,
                                            user_id=current_user.id,
@@ -92,4 +93,17 @@ def update_rates():
         db.session.commit()
         flash("Rates Updated", 'alert-success')
 
+    return redirect(url_for('assets.index'))
+
+
+@blueprint.route('/delete/<int:asset_id>', methods=['POST'])
+def asset_delete(asset_id):
+    asset_delete_form = AssetDelete()
+    if asset_delete_form.validate_on_submit():
+        delete_data = Portfolio.query.filter(Portfolio.asset_id == asset_id).filter(
+            Portfolio.user_id == current_user.id)
+        if delete_data.count():
+            delete_data.delete()
+            db.session.commit()
+            flash(f"Asset id {asset_id} has been deleted", 'alert-success')
     return redirect(url_for('assets.index'))

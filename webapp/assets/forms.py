@@ -26,4 +26,8 @@ class AssetSelection(FlaskForm):
 
 
 class UpdateRates(FlaskForm):
-    submit = SubmitField('Update Rates', render_kw={"class": "btn btn-primary btn-lg"})
+    submit = SubmitField('Update Rates', render_kw={"class": "btn btn-primary"})
+
+
+class AssetDelete(FlaskForm):
+    submit = SubmitField('Delete', render_kw={"class": "btn btn-danger btn-sm"})
