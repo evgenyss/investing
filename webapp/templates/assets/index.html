@@ -89,6 +89,19 @@
             {{ update_rates_form.hidden_tag() }}
             {{ update_rates_form.submit }}
         </form>
+        <hr/>
+
+        {% if currencies_list %}
+            {% for curr, price in currencies_list %}
+            <div class="btn-group" role="group" aria-label="{{ curr }}">
+                <button type="button" style="width: 55px" class="btn btn-primary mb-1 text-uppercase" disabled>{{ curr }}</button>
+                <button type="button" style="width: 70px" class="btn btn-outline-primary mb-1" disabled>{{ price }}</button>
+            </div>    
+            {% endfor %}
+        {% else %}
+            Currencies List Error
+        {% endif %}
+
 
     </div>
 </div>

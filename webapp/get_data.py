@@ -28,7 +28,7 @@ def get_data_by_asset(type_of_asset):
         return False
 
 
-def get_last_prices(list_of_figi):
+def get_last_prices(figi_list):
     """
     Get last prices in json for list of figi
     """
@@ -39,12 +39,12 @@ def get_last_prices(list_of_figi):
     headers["Authorization"] = f"Bearer { current_app.config['API_TOKEN'] }"
     headers["Content-Type"] = "application/json"
 
-    data = f'{{"figi": {list_of_figi}}}'
+    data = f'{{"figi": {figi_list}}}'
     try:
         result = requests.post(url, headers=headers, data=data)
         result.raise_for_status()
-        return result.json()
-    except(requests.RequestException, ValueError) as err:
+        return result.json()['lastPrices']
+    except(requests.RequestException, ValueError, KeyError) as err:
         print('Network Error')
         print(err)
         return False
@@ -60,6 +60,19 @@ def format_price(price_dict):
     except KeyError:
         price = float(price_dict['units'])
     return float('{:.4f}'.format(price))
+
+
+def get_last_prices_formatted(figi_list):
+    # Get Last Prices Formatted
+    figi_price_dictionary = {}
+    for last_price_dict in get_last_prices(figi_list):
+        if 'price' in last_price_dict:
+            last_price = format_price(last_price_dict['price'])
+            figi_key = last_price_dict['figi']
+            figi_price_dictionary[figi_key] = last_price
+        else:
+            print(f"No data for {last_price_dict['figi']}")
+    return figi_price_dictionary
 
 
 def format_datetime(datetime_string):
