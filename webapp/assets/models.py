@@ -23,7 +23,7 @@ class Currency(db.Model):
     currency = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
     isoCurrencyName = db.Column(db.String, unique=True, nullable=False)
-    price = db.Column(db.Float)
+    price = db.Column(db.Float, default=0)
 
     def __repr__(self):
         return '<Currency : {} {}>'.format(self.figi, self.name)

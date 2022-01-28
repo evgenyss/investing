@@ -5,7 +5,7 @@ from webapp.assets.forms import AssetSelection, UpdateRates, AssetDelete
 from webapp.assets.models import Asset, Portfolio, Currency
 from webapp.db import db
 
-from webapp.get_data import get_last_prices_formatted, get_last_prices
+from webapp.get_data import get_last_prices_formatted
 
 blueprint = Blueprint('assets', __name__)
 
@@ -86,14 +86,19 @@ def update_rates():
             currency_figi[currency_name] = Currency.query.filter(
                 Currency.isoCurrencyName == currency_name).with_entities(Currency.figi).first()[0]
         currency_figi_list = list(currency_figi.values())
+
+        # Get last prices for figi list
         currency_figi_price_dictionary = get_last_prices_formatted(currency_figi_list)
 
         # Update currencies rates in database
-        for figi, price in currency_figi_price_dictionary.items():
-            curr_price = Currency.query.filter(Currency.figi == figi)
-            curr_price.first().price = price
-        db.session.commit()
-        # flash("Currency Rates Updated", 'alert-success')
+        if currency_figi_price_dictionary:
+            for figi, price in currency_figi_price_dictionary.items():
+                curr_price = Currency.query.filter(Currency.figi == figi)
+                curr_price.first().price = price
+            db.session.commit()
+            # flash("Currency Rates Updated", 'alert-success')
+        else:
+            flash("Error Currency Rates Updating, please check server logs", 'alert-danger')
 
         # Join tables for update assets rates
         jointed_data = db.session.query(Asset, Portfolio).join(
@@ -113,14 +118,16 @@ def update_rates():
         figi_price_dictionary = get_last_prices_formatted(figi_list)
 
         # Insert data in database
-        for asset, portfolio in jointed_data:
-            try:
-                portfolio.price = figi_price_dictionary[asset.figi]
-            except KeyError:
-                flash(f"No data for {asset.ticker}", 'alert-warning')
-        db.session.commit()
-        flash("Rates Updated", 'alert-success')
-
+        if figi_price_dictionary:
+            for asset, portfolio in jointed_data:
+                try:
+                    portfolio.price = figi_price_dictionary[asset.figi]
+                except KeyError:
+                    flash(f"No data for {asset.ticker}", 'alert-warning')
+            db.session.commit()
+            flash("Rates Updated", 'alert-success')
+        else:
+            flash("Error Assert Rates Updating, please check server logs", 'alert-danger')
     return redirect(url_for('assets.index'))
 
 

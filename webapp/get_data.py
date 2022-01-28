@@ -21,10 +21,12 @@ def get_data_by_asset(type_of_asset):
     try:
         result = requests.post(url, headers=headers, data=data)
         result.raise_for_status()
+        print("-----------------")
         return result.json()
     except(requests.RequestException, ValueError) as err:
-        print('Network Error')
-        print(err)
+        print(f'Network Error : {err}')
+        if result.status_code == 401:
+            print("Please check TOKEN")
         return False
 
 
@@ -45,9 +47,10 @@ def get_last_prices(figi_list):
         result.raise_for_status()
         return result.json()['lastPrices']
     except(requests.RequestException, ValueError, KeyError) as err:
-        print('Network Error')
-        print(err)
-        return False
+        print(f'Network Error : {err}')
+        if result.status_code == 401:
+            print("Please check TOKEN")
+        return {}
 
 
 def format_price(price_dict):
@@ -65,14 +68,17 @@ def format_price(price_dict):
 def get_last_prices_formatted(figi_list):
     # Get Last Prices Formatted
     figi_price_dictionary = {}
-    for last_price_dict in get_last_prices(figi_list):
-        if 'price' in last_price_dict:
-            last_price = format_price(last_price_dict['price'])
-            figi_key = last_price_dict['figi']
-            figi_price_dictionary[figi_key] = last_price
-        else:
-            print(f"No data for {last_price_dict['figi']}")
-    return figi_price_dictionary
+    if get_last_prices:
+        for last_price_dict in get_last_prices(figi_list):
+            if 'price' in last_price_dict:
+                last_price = format_price(last_price_dict['price'])
+                figi_key = last_price_dict['figi']
+                figi_price_dictionary[figi_key] = last_price
+            else:
+                print(f"No data for {last_price_dict['figi']}")
+        return figi_price_dictionary
+    else:
+        return figi_price_dictionary
 
 
 def format_datetime(datetime_string):
@@ -93,17 +99,21 @@ def save_asset(asset_data):
     Using bulk insertion, if no rows in table for asset
     Else adding data one by one
     """
-    rows_exists = Asset.query.filter(Asset.type == asset_data[0]["type"]).count()
-    if not rows_exists:
-        try:
-            db.session.bulk_insert_mappings(Asset, asset_data)
-        except (IntegrityError, SQLAlchemyError) as e:
-            db.session.rollback()
-            print(e)
-        db.session.commit()
+    if asset_data:
+        rows_exists = Asset.query.filter(Asset.type == asset_data[0]["type"]).count()
+        if not rows_exists:
+            try:
+                db.session.bulk_insert_mappings(Asset, asset_data)
+            except (IntegrityError, SQLAlchemyError) as e:
+                db.session.rollback()
+                print(e)
+            db.session.commit()
+        else:
+            for asset_dict in asset_data:
+                save_data_row(Asset, asset_dict)
+        return True
     else:
-        for asset_dict in asset_data:
-            save_data_row(Asset, asset_dict)
+        return False
 
 
 def save_data_row(modelName, rowDataDict):
