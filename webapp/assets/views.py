@@ -38,10 +38,20 @@ def index():
         for asset, portfolio in jointed_data:
             delete_form = AssetDelete()
             display_list.append([asset.type, asset.ticker, asset.name, asset.sector,
-                                portfolio.number, portfolio.price, asset.currency, portfolio.asset_id, delete_form])
+                                portfolio.number, portfolio.price, asset.currency,
+                                portfolio.asset_id, asset.nominal, delete_form])
 
-            # # Create portfolio value
-            portfolio_value += int(portfolio.number * float(curr_price_dict[asset.currency]) * float(portfolio.price))
+            # # Create portfolio summ value
+            if asset.type == 'Bond':
+                portfolio_value += int(portfolio.number *
+                                       float(curr_price_dict[asset.currency]) *
+                                       float(portfolio.price) *
+                                       float(asset.nominal) / 100
+                                       )
+            else:
+                portfolio_value += int(portfolio.number *
+                                       float(curr_price_dict[asset.currency]) *
+                                       float(portfolio.price))
 
         portfolio_value = "₽{:,.0f}".format(portfolio_value)
         curr_price_dict.pop('rub')

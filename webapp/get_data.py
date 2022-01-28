@@ -21,7 +21,7 @@ def get_data_by_asset(type_of_asset):
     try:
         result = requests.post(url, headers=headers, data=data)
         result.raise_for_status()
-        print("-----------------")
+        print(f"--------- {type_of_asset} --------")
         return result.json()
     except(requests.RequestException, ValueError) as err:
         print(f'Network Error : {err}')
@@ -65,8 +65,24 @@ def format_price(price_dict):
     return float('{:.4f}'.format(price))
 
 
+def format_nominal(nominal_dict):
+    """
+    format dictionary like:
+    {'currency': 'rub', 'units': '267', 'nano': 400000000} -> to float 267,4000
+    {'currency': 'rub', 'units': '1000'} -> to float 1000,0000
+    {'currency': 'usd', 'nano': 195000000} -> to float 0,1950
+    """
+    if 'units' in nominal_dict and 'nano' in nominal_dict:
+        nominal = int(nominal_dict['units']) + float(nominal_dict['nano']/1000000000)
+    elif 'nano' in nominal_dict and 'units' not in nominal_dict:
+        nominal = float(nominal_dict['nano']/1000000000)
+    else:
+        nominal = int(nominal_dict['units'])
+    return float('{:.4f}'.format(nominal))
+
+
 def get_last_prices_formatted(figi_list):
-    # Get Last Prices Formatted
+    """ Get Last Prices Formatted """
     figi_price_dictionary = {}
     if get_last_prices:
         for last_price_dict in get_last_prices(figi_list):
@@ -138,7 +154,7 @@ def check_in_data(var, data):
         return data[var]
     else:
         data[var] = ""
-        print(f"Info : Key error for { var }")
+        # print(f"Info : Key error for { var }")
         return data[var]
 
 
@@ -162,6 +178,13 @@ def parse_asset(type_of_asset):
                 result["name"] = check_in_data("name", data)
                 result["sector"] = check_in_data("sector", data)
                 result["country_of_risk"] = check_in_data("countryOfRisk", data)
+
+                if result["type"] == 'Bond':
+                    if data["nominal"]:
+                        result["nominal"] = format_nominal(data["nominal"])
+                else:
+                    result["nominal"] = 0
+
                 result_list.append(result)
     return result_list
 

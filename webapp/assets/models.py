@@ -11,6 +11,7 @@ class Asset(db.Model):
     name = db.Column(db.String, nullable=False)
     sector = db.Column(db.String, nullable=False)
     country_of_risk = db.Column(db.String, nullable=False)
+    nominal = db.Column(db.Float)
 
     def __repr__(self):
         return '<{} : {} {}>'.format(self.type, self.figi, self.name)

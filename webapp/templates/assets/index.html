@@ -45,6 +45,7 @@
                 <th scope="col">Price</th>
                 <th scope="col">Curr.</th>
                 <!-- <th scope="col">ID</th> -->
+                <th scope="col">Nom.</th>
                 <th scope="col">Option</th>
 
               </tr>
@@ -52,7 +53,7 @@
             <tbody>
     
               {% if portfolio_list %}
-                {% for type, ticker, name, sector, number, price, currency, id, delete_form in portfolio_list %}
+                {% for type, ticker, name, sector, number, price, currency, id, nominal, delete_form in portfolio_list %}
                     <tr>
                         <th scope="row">{{loop.index}}</th>
                         <td>{{type}}</td>
@@ -63,6 +64,7 @@
                         <td>{{price}}</td>
                         <td>{{currency}}</td>
                         <!-- <td>{{id}}</td> -->
+                        <td>{{nominal}}</td>
                         <td>
                             {% set target_url = url_for('assets.asset_delete', asset_id=id)  %}
                             <!-- {{ target_url }} -->
