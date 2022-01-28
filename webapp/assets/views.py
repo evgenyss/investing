@@ -16,31 +16,44 @@ def index():
     title = "Portfolio"
     asset_form = AssetSelection()
     update_rates_form = UpdateRates()
+    portfolio_value = 0
 
     # Get currency exchange rates from database
     currencies_list = ['usd', 'eur', 'gbp']
-    curr_price_list = []
+    curr_price_dict = {'rub': 1}
     for curr in currencies_list:
         curr_price = Currency.query.filter(Currency.isoCurrencyName == curr).with_entities(Currency.price).first()[0]
-        curr_price_list.append((curr, '{:.2f}'.format(curr_price)))
+        curr_price_dict[curr] = '{:.2f}'.format(curr_price)
 
     # Create options for dropdown form
     responce_data = Asset.query.with_entities(Asset.ticker, Asset.name, Asset.type).order_by(Asset.name).all()
     output = [" : ".join(output[:3]) for output in responce_data]
 
-    # Create data for Portfolio table
     if current_user.is_authenticated:
         jointed_data = db.session.query(Asset, Portfolio).join(
             Portfolio, Asset.id == Portfolio.asset_id
             ).filter(Portfolio.user_id == current_user.id)
+
+        # Create data for Portfolio table
         for asset, portfolio in jointed_data:
             delete_form = AssetDelete()
             display_list.append([asset.type, asset.ticker, asset.name, asset.sector,
                                 portfolio.number, portfolio.price, asset.currency, portfolio.asset_id, delete_form])
 
-    return render_template("assets/index.html", page_title=title,
-                           asset_list=output, portfolio_list=display_list,
-                           form=asset_form, update_rates_form=update_rates_form, currencies_list=curr_price_list)
+            # # Create portfolio value
+            portfolio_value += int(portfolio.number * float(curr_price_dict[asset.currency]) * float(portfolio.price))
+
+        portfolio_value = "₽{:,.0f}".format(portfolio_value)
+        curr_price_dict.pop('rub')
+
+    return render_template("assets/index.html",
+                           page_title=title,
+                           asset_list=output,
+                           portfolio_list=display_list,
+                           form=asset_form,
+                           update_rates_form=update_rates_form,
+                           curr_price_dict=curr_price_dict,
+                           portfolio_value=portfolio_value)
 
 
 @blueprint.route('/asset-select', methods=['POST'])

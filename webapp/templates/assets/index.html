@@ -91,8 +91,8 @@
         </form>
         <hr/>
 
-        {% if currencies_list %}
-            {% for curr, price in currencies_list %}
+        {% if curr_price_dict %}
+            {% for curr, price in curr_price_dict.items() %}
             <div class="btn-group" role="group" aria-label="{{ curr }}">
                 <button type="button" style="width: 55px" class="btn btn-primary mb-1 text-uppercase" disabled>{{ curr }}</button>
                 <button type="button" style="width: 70px" class="btn btn-outline-primary mb-1" disabled>{{ price }}</button>
@@ -101,7 +101,12 @@
         {% else %}
             Currencies List Error
         {% endif %}
+        <hr/>
 
+        <div class="btn-group" role="group" aria-label="">
+            <button type="button" class="btn btn-primary mb-1 text-uppercase" disabled>sum</button>
+            <button type="button" class="btn btn-outline-primary mb-1" disabled>{{ portfolio_value }}</button>
+        </div>   
 
     </div>
 </div>

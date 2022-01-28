@@ -186,6 +186,13 @@ def parse_currency():
     return result_list
 
 
+# def convert_to_rub(exchange_rate, value, isoCurName):
+#     if (isoCurName == "rub"):
+#         return float(value)
+#     else:
+#         return float(exchange_rate) * float(value)
+
+
 if __name__ == "__main__":
     # Test 1
     # print(formatted_price({'units': '98', 'nano': 475000000}))
