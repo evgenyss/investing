@@ -53,21 +53,10 @@ def get_last_prices(figi_list):
         return {}
 
 
-def format_price(price_dict):
-    """
-    format dictionary price like {'units': '98', 'nano': 475000000} to float 98,4750
-    KeyError exception for KeyError: 'nano' Errors
-    """
-    try:
-        price = int(price_dict['units']) + float(price_dict['nano']/1000000000)
-    except KeyError:
-        price = float(price_dict['units'])
-    return float('{:.4f}'.format(price))
-
-
 def format_nominal(nominal_dict):
     """
     format dictionary like:
+    {'units': '98', 'nano': 475000000} -> to float 98,4750
     {'currency': 'rub', 'units': '267', 'nano': 400000000} -> to float 267,4000
     {'currency': 'rub', 'units': '1000'} -> to float 1000,0000
     {'currency': 'usd', 'nano': 195000000} -> to float 0,1950
@@ -87,7 +76,7 @@ def get_last_prices_formatted(figi_list):
     if get_last_prices:
         for last_price_dict in get_last_prices(figi_list):
             if 'price' in last_price_dict:
-                last_price = format_price(last_price_dict['price'])
+                last_price = format_nominal(last_price_dict['price'])
                 figi_key = last_price_dict['figi']
                 figi_price_dictionary[figi_key] = last_price
             else:
@@ -150,12 +139,10 @@ def save_data_row(modelName, rowDataDict):
 
 def check_in_data(var, data):
     """ Check, if var in data dictionary or not """
-    if var in data:
-        return data[var]
-    else:
-        data[var] = ""
+    if var not in data:
         # print(f"Info : Key error for { var }")
-        return data[var]
+        data[var] = ""
+    return data[var]
 
 
 def parse_asset(type_of_asset):
@@ -207,13 +194,6 @@ def parse_currency():
                 result["isoCurrencyName"] = check_in_data("isoCurrencyName", data)
                 result_list.append(result)
     return result_list
-
-
-# def convert_to_rub(exchange_rate, value, isoCurName):
-#     if (isoCurName == "rub"):
-#         return float(value)
-#     else:
-#         return float(exchange_rate) * float(value)
 
 
 if __name__ == "__main__":
