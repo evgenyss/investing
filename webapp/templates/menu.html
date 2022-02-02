@@ -8,19 +8,38 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       
       <ul class="navbar-nav mr-auto">
-        <!-- {% if current_user.is_admin %}
-        <li class="nav-item active">
-          <a class="nav-link" href="{{ url_for('admin.admin_index') }}"> Admin Console </a>
-        </li>
-        {% endif %} -->
+
       </ul>
 
       <ul class="navbar-nav">
 
           {% if current_user.is_authenticated %}
+
+
           <li class="nav-item active">
-            <span class="btn btn-outline-success mr-1 mb-1"> {{ current_user.username }} </span>
+            <button type="button" class="btn btn-outline-success mr-1 mb-1" data-toggle="modal" data-target="#infoModal">
+              {{ current_user.username }}
+            </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <!-- <div class="modal-header">
+                  <h5 class="modal-title" id="infoModalLabel">To Do List</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div> -->
+                <div class="modal-body">
+                  <p>Current user: {{ current_user.username }}</p>   
+                </div>
+              </div>
+            </div>
+          </div>
+
           </li>
+
 
             {% if current_user.is_admin %}
             <li class="nav-item active">
@@ -28,17 +47,21 @@
             </li>
             {% endif %}
 
+
           <li class="nav-item active">
-            <!-- <a class="nav-link" href="{{ url_for('user.logout') }}"> Logout </a> -->
             <a class="btn btn-outline-secondary" href="{{ url_for('user.logout') }}" role="button"> Logout </a>
           </li>
+
           {% else %}
+
           <li class="nav-item active">
             <a class="btn btn-outline-secondary mr-1 mb-1" href="{{ url_for('user.register') }}" role="button"> Register </a>
           </li>
+
           <li class="nav-item active">
             <a class="btn btn-outline-secondary" href="{{ url_for('user.login') }}" role="button"> Login </a>
           </li>
+
           {% endif %}
         
       </ul>
