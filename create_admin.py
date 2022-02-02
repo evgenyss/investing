@@ -27,4 +27,3 @@ with app.app_context():
     db.session.commit()
     print('Admin user "{}" added, id = {}'.format(new_user.username, new_user.id))
 
-
